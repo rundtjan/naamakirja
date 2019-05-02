@@ -37,8 +37,8 @@ public class Picture extends AbstractPersistable<Long> {
     @OneToMany(cascade=CascadeType.ALL)
     private List<PictureComment> kommentit;
     
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
+    //@Lob
+    //@Basic(fetch = FetchType.LAZY)
     private byte[] content;
 
 }
