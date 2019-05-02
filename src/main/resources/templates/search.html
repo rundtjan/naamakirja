@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='hae')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+
+    </head>
+    <body style="padding-top:70px">
+        <header th:replace="fragments/layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+            
+             <section class="container">
+                 <div class="row">
+                     <div class="col-4"></div>
+                     <div class="col-4">
+                <form th:action="@{/hae}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                    <label>Hae termillä:</label>
+                    <input type="text" class="form-control" name="hakusana"/>
+                    </div>
+                    <button type="submit" class="btn btn-info">Hae</button>
+                </form>
+                           
+
+            <div th:if="${henkilot != null}" class="container">
+                <div class="row" th:each="henkilo : ${henkilot}">
+                <div >
+                    <img th:if="${henkilo.profiilikuvaId != null}"  style="float:left; width:50px;margin-right:10px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${henkilo.profiilikuvaId})}"/>
+                    <p> <span th:text="${henkilo.nimi}"/> <a th:href="@{/{profiili}(profiili=${henkilo.profiili})}">näytä profiili</a></p>
+                </div>
+                </div>
+            </div>
+                     </div>
+                 </div>
+            </section>
+        </main>
+        <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ '';</script>
+        <script th:src="@{/javascript/kuvat.js}" defer></script>
+    </body>
+</html>

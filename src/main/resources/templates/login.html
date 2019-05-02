@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='Kirjaudu')">
+        <meta charset="UTF-8" />
+        <title></title>
+    </head>
+    <body>
+        <header th:replace="fragments/nologin_layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+            <section class="container" style="text-align: center">
+                <p>&nbsp;</p>
+                <h2>Kirjaudu Naamakirjaan!</h2>
+            </section>
+
+            <section class="container">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                    <div th:if="${param.error}" class="alert alert-danger">    
+                    Väärä salasana tai käyttäjätunnus.
+                </div>
+                <h2 th:text="${virhe} ? ${virhe} : ''" />
+                <form th:action="@{/login}" method="POST">
+                    <div class="form-group">
+                    <label>Käyttäjänimi:</label>
+                    <input type="text" class="form-control" name="username"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Salasana</label>
+                    <input type="password" class="form-control" name="password"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-info">Kirjaudu</button>
+                </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </body>
+</html>

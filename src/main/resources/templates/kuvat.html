@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='Kuvat')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+
+    </head>
+    <body style="padding-top: 70px">
+        <header th:replace="fragments/layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+            <div class="container">
+            <div class="row">
+            <section class="col-3">
+                <img th:if="${person.profiilikuvaId != null}" style="width:80%;margin-right:20px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${person.profiilikuvaId})}"/>
+                <h2 th:text="${person.nimi}" />
+                <a th:href="@{/{profiili}(profiili=${person.profiili})}">Takaisin profiiliin</a>
+                    <form th:if="${ownPage}" th:action="@{/kuvat/{profiili}(profiili=${person.profiili})}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                    <label>Lataile uusi kuva:</label>
+                    <input class="form-control" type="file" name="file" id="file"/>
+                    </div>
+                    <div class="form-group">
+                    <label>Kirjoita kuvaus:</label>
+                    <input class="form-control" type="text" name="kuvaus" id="kuvaus"/>
+                    </div>
+                    <button type="submit" class="btn btn-info">Lähetä</button>
+                </form>
+            </section>
+            
+            <section class="col-9">
+                <div th:if="${virhe}" class="row">
+                <div th:text="${virheviesti}" class="alert alert-danger col-9" />
+                </div>
+                <div th:each="pic: ${pics}" class="row" style="background-color:#e6f3f7; padding: 10px; margin: 5px; border-radius: 10px">
+    
+                    
+                <div class="col-3" style="margin-left: 10px">
+                    <img style="width:100%;margin-right:20px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${pic.id})}"/><br />
+                    <p th:text="${pic.kuvaus}" />
+                    <button class="btn btn-info" th:id="${pic.id}" th:if="${ownPage && pic.id != person.profiilikuvaId}" onclick="profiilikuvaksi(this.id)">Profiilikuvaksi</button>
+                    <button class="btn btn-danger" th:id="${pic.id}" th:if="${ownPage}" onclick="poistakuva(this.id)">Poista kuva</button>
+                </div>
+                    <div class="col-8">
+                        <p style="margin-bottom:-3px">&nbsp;</p>
+                    <p><span th:text="${#lists.size(pic.tykkaajienId)}" /><span> peukkua </span><button th:if="${ownPage == true || kaveri == true}" class="btn btn-xs btn-info" th:id="${pic.id}" style="margin: 2px; font-size: 0.875rem; padding:0.25 rem; line-height: 0.5" onclick="like(this.id)">Tykkään</button></p>
+                    <p style="background-color: #f6fbfc; padding-left:5px; padding-right:5px; margin-bottom:10px; border-radius: 5px" th:each="comment: ${pic.kommentit}">
+                        <span th:text="${comment.sisalto}"></span><span>&nbsp;<i>kommentoi</i> </span><b><span th:text="${comment.tekija}" /></b><span> </span><span th:text="${#temporals.format(comment.aikaleima, 'dd.MM.yyyy HH:mm')}" />
+                    </p>
+                    <div th:if="${ownPage == true || kaveri == true}">
+                    <input type="text" th:id="'text-' + ${pic.id}" />
+                    <button class="btn btn-success btn-xs" style="font-size: 0.875rem; padding:0.25 rem; line-height: 1.2" th:id="${pic.id}" onclick="kommentoi(this.id)">Kommentoi</button>
+                    </div>
+                    
+                </div>
+                </div>
+            </section>
+            </div>
+            </div>
+        </main>
+        <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ '';</script>
+        <script th:src="@{/javascript/kuvat.js}" defer></script>
+    </body>
+</html>

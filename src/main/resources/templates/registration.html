@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='Anna tietosi')">
+        <meta charset="UTF-8" />
+        <title></title>
+    </head>
+    <body>
+        <header th:replace="fragments/nologin_layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+            <section class="container" style="text-align: center">
+                <p>&nbsp;</p>
+                <h2>Anna ensimmäiset henkilötietosi Naamakirjalle!</h2>
+                <p><i>Tästä se alkaa...</i></p>
+            </section>
+
+            <section class="container">
+                <div class="row">
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                <div class="alert-danger" th:if="${virhe != null}" th:text="${virhe}"></div>
+                <form th:action="@{/registration}" th:object="${person}" method="POST">
+
+                    <div class="form-group">
+                    <label>Käyttäjänimi:</label>
+                    <div class="alert-danger" th:if="${#fields.hasErrors('kayttajatunnus')}">Käyttäjätunnuksen pitää olla 5-30 merkkiä pitkä</div>
+                    <input type="text" class="form-control" th:field="*{kayttajatunnus}" name="kayttajatunnus"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Salasana</label>
+                    <div class="alert-danger" th:if="${#fields.hasErrors('salasana')}" th:error="*{salasana}">Salasanan pitää olla 5-30 merkkiä pitkä</div>
+                    <input type="password" class="form-control" th:field="*{salasana}" name="salasana"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Nimi</label>
+                        <div class="alert-danger" th:if="${#fields.hasErrors('nimi')}">Nimen täytyy olla 4-150 merkkiä pitkä</div>
+                    <input type="text" class="form-control" th:field="*{nimi}" name="nimi"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Profiilitunnus <i>(eli profiilisi url:in loppuosa)</i></label>
+                        <div class="alert-danger" th:if="${#fields.hasErrors('profiili')}">Profiilin pitää olla 4-50 merkkiä pitkä</div>
+                    <input type="text" class="form-control" th:field="*{profiili}" name="profiili"/>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Rekisteröidy</button>
+                </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </body>
+</html>

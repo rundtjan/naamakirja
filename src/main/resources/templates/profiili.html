@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='Profiili')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+    </head>
+    <body style="padding-top: 70px">
+        <header th:replace="fragments/layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+
+            <section class="container">
+                <div class="row">
+                    <div class="col-3">
+                <img th:if="${person.profiilikuvaId != null}" style="width:80%;margin-right:20px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${person.profiilikuvaId})}"/>
+                <h2 th:text="${person.nimi}" />
+                <a th:href="@{/kuvat/{profiili}(profiili=${person.profiili})}">Kuva-albumi</a>
+                <form th:if="${ownProfile != true && showFRbutton}" th:action="@{/person/friendrequest/{profiili}(profiili=${person.profiili})}" method="POST">
+                    <button type="submit" class="btn btn-info">Lähetä kaveripyyntö</button>
+                </form>
+                    </div>
+                <div class="col-6">
+            
+                       <div class="container" th:if="${ownProfile == true || kaveri == true}">
+                <form th:action="@{/person/{profiili}(profiili=${person.profiili})}" method="POST">
+                    <div class="form-group">
+                    <label>Kirjoita viesti:</label>
+                    <input type="text" class="form-control" name="viesti"/>
+                    </div>
+                    <button type="submit" class="btn btn-info">Lähetä</button>
+                </form>
+                           
+            </div>
+            <div class="container" id="wall">
+                <div style="background-color: #e6f3f7; padding: 5px; padding-top: 0px; margin-bottom:10px; border-radius: 5px" th:each="message: ${wall}">
+                    <p> <h4><span th:text="${message.sisalto}" /></h4>
+                        <span>kirjoitti </span><a th:href="@{/{profiili}(profiili=${message.kirjoittajanProfiili})}" th:text="${message.kirjoittaja}" />
+                    <span th:text="${#temporals.format(message.aikaleima, 'dd.MM.yyyy HH:mm')}" /><br /><span th:text="${#lists.size(message.tykkaajienId)}" /><span> peukkua </span>
+                    <button th:if="${ownProfile == true || kaveri == true}" class="btn btn-xs btn-info" th:id="${message.id}" style="margin-bottom: 10px; font-size: 0.875rem; padding:0.25 rem; line-height: 0.5" onclick="like(this.id)">Tykkään</button>
+                    <p style="background-color: #f6fbfc; padding: 3px" th:each="comment: ${message.kommentit}">
+                        <span th:text="${comment.sisalto}"></span><span>&nbsp;kommentoi </span><b><span th:text="${comment.tekija}" /></b><span> </span><span th:text="${#temporals.format(comment.aikaleima, 'dd.MM.yyyy HH:mm')}" />
+                    </p>
+                    <div th:if="${ownProfile == true || kaveri == true}">
+                    <input type="text" th:id="'text-' + ${message.id}" />
+                    <button class="btn btn-success btn-xs" style="font-size: 0.875rem; padding:0.25 rem; line-height: 1.2" th:id="${message.id}" onclick="kommentoi(this.id)">Kommentoi</button>
+                    </div>
+                    </p>
+                </div>
+            </div>
+            </div>
+                    <div class="col-3">
+            <div id="friendrequests" th:if="${ownProfile && not #lists.isEmpty(friendrequests)}">
+                <h3>Kaveripyyntöjä:</h3>
+                <div th:each="request: ${friendrequests}">
+                    <img th:if="${request.tekija.profiilikuvaId != null}" style="float:left; width:50px;margin-right:10px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${request.tekija.profiilikuvaId})}"/>
+                    <p><a th:href="@{/{profiili}(profiili=${request.tekija.profiili})}" th:text="${request.tekija.nimi}" /><br />
+                    <span th:text="${#temporals.format(request.aikaleima, 'dd.MM.yyyy HH:mm')}" />
+                    </p>
+                    <form style="float:left; margin-right:10px" th:action="@{/person/accept/{profiili}/{friendprofiili}(profiili=${person.profiili}, friendprofiili=${request.tekija.profiili})}" method="POST">
+                    <button type="submit" class="btn btn-info">Hyväksy</button>
+                    </form>
+                    <form style="float:left" th:action="@{/person/delete/{profiili}/{friendprofiili}(profiili=${person.profiili}, friendprofiili=${request.tekija.profiili})}" method="POST">
+                    <button type="submit" class="btn btn-danger">Hylkää</button>
+                    </form>
+                <div style="content:'';clear: both;display: table;" />
+                </div>
+                
+            </div>
+            <div id="friends">
+                <h3>Kaverit:</h3>
+                <div style="line-height: 50px" th:each="kaveri: ${person.kaverit}">
+                    <img th:if="${kaveri.profiilikuvaId != null}" style="float:left; width:50px;margin-right:10px; margin-bottom:10px; margin-top:10px" th:src="@{/kuvat/kuva/{id}(id=${kaveri.profiilikuvaId})}"/>
+                    <a th:href="@{/{profiili}(profiili=${kaveri.profiili})}" th:text="${kaveri.nimi}" />
+                <div style="content:'';clear: both;display: table;" />
+                </div>
+            </div>
+            </div>
+            </div>
+                </section>
+        </main>
+        <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ '';</script>
+        <script th:src="@{/javascript/profiili.js}" defer></script>
+    </body>
+</html>
+

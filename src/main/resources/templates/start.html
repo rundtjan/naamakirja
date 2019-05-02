@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/layout :: head(text='Tervetuloa')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+    </head>
+    <body>
+        <header th:replace="fragments/nologin_layout :: header">
+            <p>menu</p>
+        </header>
+
+        <main>
+            <div class="container">
+                <div class="row" style="margin-top:10%">
+                    <div class="col-4"></div>
+                    <div class="col-4" style="text-align: center">
+            <h3 style="margin-bottom:20px">Tervetuloa Naamakirjaan!</h3>
+            <a th:href="@{/login}" class="btn btn-success">Kirjaudu</a>
+            <a th:href="@{/registration}" class="btn btn-info">Rekisteröidy</a>
+                    </div>
+                    <div class="col-4"></div>
+                    </div>
+            </div>
+        </main>
+
+    </body>
+</html>
