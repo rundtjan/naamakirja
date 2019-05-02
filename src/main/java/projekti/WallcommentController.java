@@ -59,10 +59,13 @@ public class WallcommentController {
         Person tekija = personRepository.findByKayttajatunnus(kayttajatunnus);
         Wallmessage m = wallmessageRepository.findById(likeId).get();
         Set<Long> tykkaajat = m.getTykkaajienId();
+        System.out.println(tekija.getId());
+        System.out.println(tykkaajat);
         if (!tykkaajat.contains(tekija.getId())){
             System.out.println("hyvaksyy tykkays " + likeId);
-            tykkaajat.add(likeId);
+            tykkaajat.add(tekija.getId());
             m.setTykkaajienId(tykkaajat);
+            System.out.println(tykkaajat);
             wallmessageRepository.save(m);
         }
         return; 

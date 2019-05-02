@@ -43,7 +43,7 @@ http.onreadystatechange = function() {
 }
     
     var data = {}
-
+    console.log("liking " + id);
     http.open("POST", url  + "wallLike/" + id)
     http.setRequestHeader('Accept', 'application/json')
     http.setRequestHeader('Content-Type', 'application/json')
