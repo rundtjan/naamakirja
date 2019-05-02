@@ -66,7 +66,7 @@ public class PicCommentController {
         Set<Long> tykkaajat = p.getTykkaajienId();
         if (!tykkaajat.contains(tekija.getId())){
             System.out.println("hyvaksyy tykkays " + likeId);
-            tykkaajat.add(likeId);
+            tykkaajat.add(tekija.getId());
             p.setTykkaajienId(tykkaajat);
             pictureRepository.save(p);
         }
