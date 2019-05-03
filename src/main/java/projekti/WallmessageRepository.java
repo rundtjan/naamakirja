@@ -10,12 +10,12 @@ package projekti;
  * @author ÄGAREN
  */
 import java.util.List;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WallmessageRepository extends JpaRepository<Wallmessage, Long>{
-    @EntityGraph(attributePaths = {"tykkaajienId", "kommentit"})
+
+    @EntityGraph(attributePaths = {"kommentit"})
     List<Wallmessage> findByOmistajaId(Long id, Pageable pageable);
 }

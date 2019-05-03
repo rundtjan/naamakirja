@@ -9,11 +9,11 @@ var http = new XMLHttpRequest()
 
 http.onreadystatechange = function() {
     if (this.readyState != 4) {
-        location.reload();
         return
     }
     
     console.log("tallennettu");
+            location.reload();
 }
     
     var data = {
@@ -67,7 +67,7 @@ http.onreadystatechange = function() {
     for (var i = 0; i < response.length; i++){
         inner += "<p>" + response[i].name + "</p>";
     }
-    //document.getElementById("tasks").innerHTML = inner;
+
 }
     
     http.open("GET", url + "wallcomments/" + id)

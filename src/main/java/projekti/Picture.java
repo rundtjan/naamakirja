@@ -5,14 +5,11 @@
  */
 package projekti;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,15 +27,13 @@ public class Picture extends AbstractPersistable<Long> {
     private String kuvaus;
     private Long koko;
     private Long omistajaId;
-    
-    @ElementCollection(targetClass=Long.class)
-    private Set<Long> tykkaajienId;
+    private int tykkaykset;
 
     @OneToMany(cascade=CascadeType.ALL)
     private List<PictureComment> kommentit;
     
-    //@Lob
-    //@Basic(fetch = FetchType.LAZY)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
     private byte[] content;
 
 }

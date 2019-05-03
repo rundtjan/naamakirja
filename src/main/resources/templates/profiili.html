@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="fragments/layout :: head(text='Profiili')">
+    <head  th:replace="fragments/layout :: head(text='Profiili')">
         <meta charset="UTF-8" />
         <title>Registration</title>
     </head>
@@ -24,7 +24,7 @@
                 <div class="col-6">
             
                        <div class="container" th:if="${ownProfile == true || kaveri == true}">
-                <form th:action="@{/person/{profiili}(profiili=${person.profiili})}" method="POST">
+                <form style="background-color: #e6f3f7; padding: 5px; padding-top: 0px; margin-bottom:10px; border-radius: 5px" th:action="@{/person/{profiili}(profiili=${person.profiili})}" method="POST">
                     <div class="form-group">
                     <label>Kirjoita viesti:</label>
                     <input type="text" class="form-control" name="viesti"/>
@@ -37,7 +37,7 @@
                 <div style="background-color: #e6f3f7; padding: 5px; padding-top: 0px; margin-bottom:10px; border-radius: 5px" th:each="message: ${wall}">
                     <p> <h4><span th:text="${message.sisalto}" /></h4>
                         <span>kirjoitti </span><a th:href="@{/{profiili}(profiili=${message.kirjoittajanProfiili})}" th:text="${message.kirjoittaja}" />
-                    <span th:text="${#temporals.format(message.aikaleima, 'dd.MM.yyyy HH:mm')}" /><br /><span th:text="${#lists.size(message.tykkaajienId)}" /><span> peukkua </span>
+                    <span th:text="${#temporals.format(message.aikaleima, 'dd.MM.yyyy HH:mm')}" /><br /><span th:text="${message.tykkaykset}" /><span> peukkua </span>
                     <button th:if="${ownProfile == true || kaveri == true}" class="btn btn-xs btn-info" th:id="${message.id}" style="margin-bottom: 10px; font-size: 0.875rem; padding:0.25 rem; line-height: 0.5" onclick="like(this.id)">Tykkään</button>
                     <p style="background-color: #f6fbfc; padding: 3px" th:each="comment: ${message.kommentit}">
                         <span th:text="${comment.sisalto}"></span><span>&nbsp;kommentoi </span><b><span th:text="${comment.tekija}" /></b><span> </span><span th:text="${#temporals.format(comment.aikaleima, 'dd.MM.yyyy HH:mm')}" />

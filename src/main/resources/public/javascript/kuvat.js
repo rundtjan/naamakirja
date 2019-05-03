@@ -8,10 +8,9 @@ var http = new XMLHttpRequest()
 
 http.onreadystatechange = function() {
     if (this.readyState != 4) {
-        location.reload();
         return
     }
-    
+    location.reload();
     console.log("tallennettu");
 }
     

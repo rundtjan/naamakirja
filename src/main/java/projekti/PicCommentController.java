@@ -2,14 +2,9 @@ package projekti;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +22,9 @@ public class PicCommentController {
     @Autowired
     private PictureRepository pictureRepository;
     
+    @Autowired
+    private LikeControlRepository likeControlRepository;
+    
     @PostMapping("/kuva/profiilikuvaksi/{kuvaId}")
     public void profilePicture(@PathVariable Long kuvaId) {
         System.out.println("any reaction");
@@ -39,12 +37,16 @@ public class PicCommentController {
     }
     
     @PostMapping("/piccomments")
-    public void create(@RequestBody PictureComment comment) {
+    public PictureComment create(@RequestBody PictureComment comment) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String kayttajatunnus = auth.getName();
         Person tekija = personRepository.findByKayttajatunnus(kayttajatunnus);
         comment.setTekija(tekija.getNimi());
         comment.setAikaleima(LocalDateTime.now());
+        if (comment.getSisalto().isEmpty()){
+            comment.setSisalto("empty");
+            return comment;
+        }
         System.out.println("saving" + comment);
         Picture p = pictureRepository.findById(comment.getParentPictureId()).get();
         List<PictureComment> kommentit = p.getKommentit();
@@ -54,7 +56,7 @@ public class PicCommentController {
         kommentit.add(comment);
         p.setKommentit(kommentit);
         pictureRepository.save(p);
-        return; 
+        return comment; 
     }
     
     @PostMapping("/picLike/{likeId}")
@@ -63,12 +65,16 @@ public class PicCommentController {
         String kayttajatunnus = auth.getName();
         Person tekija = personRepository.findByKayttajatunnus(kayttajatunnus);
         Picture p = pictureRepository.findById(likeId).get();
-        Set<Long> tykkaajat = p.getTykkaajienId();
-        if (!tykkaajat.contains(tekija.getId())){
+        if (likeControlRepository.findByTykkaajaIdAndTykatty(tekija.getId(), "P"+likeId).isEmpty()){
             System.out.println("hyvaksyy tykkays " + likeId);
-            tykkaajat.add(tekija.getId());
-            p.setTykkaajienId(tykkaajat);
+            p.setTykkaykset(p.getTykkaykset()+1);
             pictureRepository.save(p);
+            LikeControl l = new LikeControl(tekija.getId(), "P"+likeId);
+            likeControlRepository.save(l);
+        } else {
+            p.setTykkaykset(p.getTykkaykset()-1);
+            Long deletoidaan = likeControlRepository.findByTykkaajaIdAndTykatty(tekija.getId(), "P"+likeId).get(0).getId();
+            likeControlRepository.deleteById(deletoidaan);
         }
         return; 
     }

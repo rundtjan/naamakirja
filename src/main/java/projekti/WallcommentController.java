@@ -2,7 +2,6 @@ package projekti;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +25,9 @@ public class WallcommentController {
     
     @Autowired
     private WallmessageRepository wallmessageRepository;
+    
+    @Autowired
+    private LikeControlRepository likeControlRepository;
 
     @GetMapping("/wallcomments/{parentId}")
     public List<MessageComment> list(@PathVariable Long parentId) {
@@ -40,7 +42,10 @@ public class WallcommentController {
         Person tekija = personRepository.findByKayttajatunnus(kayttajatunnus);
         comment.setTekija(tekija.getNimi());
         comment.setAikaleima(LocalDateTime.now());
-        System.out.println("saving" + comment);
+        if (comment.getSisalto().isEmpty()){
+            return;
+        }
+        //System.out.println("saving" + comment);
         Wallmessage w = wallmessageRepository.findById(comment.getParentMessageId()).get();
         List<MessageComment> kommentit = w.getKommentit();
         if (kommentit.size() == 10){
@@ -58,15 +63,17 @@ public class WallcommentController {
         String kayttajatunnus = auth.getName();
         Person tekija = personRepository.findByKayttajatunnus(kayttajatunnus);
         Wallmessage m = wallmessageRepository.findById(likeId).get();
-        Set<Long> tykkaajat = m.getTykkaajienId();
-        System.out.println(tekija.getId());
-        System.out.println(tykkaajat);
-        if (!tykkaajat.contains(tekija.getId())){
+        if (likeControlRepository.findByTykkaajaIdAndTykatty(tekija.getId(), "W"+likeId).isEmpty()){//kyseinen tykkays ei ole ennen tehty
             System.out.println("hyvaksyy tykkays " + likeId);
-            tykkaajat.add(tekija.getId());
-            m.setTykkaajienId(tykkaajat);
-            System.out.println(tykkaajat);
+            m.setTykkaykset(m.getTykkaykset() + 1);
             wallmessageRepository.save(m);
+            LikeControl l = new LikeControl(tekija.getId(), "W"+likeId);
+            likeControlRepository.save(l);//muista että kyseinen tykkäys on tehty
+        } else {
+            m.setTykkaykset(m.getTykkaykset() - 1);//poistetaan kyseinen like, kuten facebookissa..
+            wallmessageRepository.save(m);
+            Long deletoidaan = likeControlRepository.findByTykkaajaIdAndTykatty(tekija.getId(), "W"+likeId).get(0).getId();
+            likeControlRepository.deleteById(deletoidaan);
         }
         return; 
     }

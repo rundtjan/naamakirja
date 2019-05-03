@@ -45,7 +45,7 @@
                 </div>
                     <div class="col-8">
                         <p style="margin-bottom:-3px">&nbsp;</p>
-                    <p><span th:text="${#lists.size(pic.tykkaajienId)}" /><span> peukkua </span><button th:if="${ownPage == true || kaveri == true}" class="btn btn-xs btn-info" th:id="${pic.id}" style="margin: 2px; font-size: 0.875rem; padding:0.25 rem; line-height: 0.5" onclick="like(this.id)">Tykkään</button></p>
+                    <p><span th:text="${pic.tykkaykset}" /><span> peukkua </span><button th:if="${ownPage == true || kaveri == true}" class="btn btn-xs btn-info" th:id="${pic.id}" style="margin: 2px; font-size: 0.875rem; padding:0.25 rem; line-height: 0.5" onclick="like(this.id)">Tykkään</button></p>
                     <p style="background-color: #f6fbfc; padding-left:5px; padding-right:5px; margin-bottom:10px; border-radius: 5px" th:each="comment: ${pic.kommentit}">
                         <span th:text="${comment.sisalto}"></span><span>&nbsp;<i>kommentoi</i> </span><b><span th:text="${comment.tekija}" /></b><span> </span><span th:text="${#temporals.format(comment.aikaleima, 'dd.MM.yyyy HH:mm')}" />
                     </p>
